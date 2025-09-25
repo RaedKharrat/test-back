@@ -1,0 +1,2966 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+microservices/.git/COMMIT_EDITMSG
+microservices/.git/config
+microservices/.git/description
+microservices/.git/HEAD
+microservices/.git/hooks/applypatch-msg.sample
+microservices/.git/hooks/commit-msg.sample
+microservices/.git/hooks/fsmonitor-watchman.sample
+microservices/.git/hooks/post-update.sample
+microservices/.git/hooks/pre-applypatch.sample
+microservices/.git/hooks/pre-commit.sample
+microservices/.git/hooks/pre-merge-commit.sample
+microservices/.git/hooks/pre-push.sample
+microservices/.git/hooks/pre-rebase.sample
+microservices/.git/hooks/pre-receive.sample
+microservices/.git/hooks/prepare-commit-msg.sample
+microservices/.git/hooks/push-to-checkout.sample
+microservices/.git/hooks/update.sample
+microservices/.git/info/exclude
+microservices/.git/info/refs
+microservices/.git/logs/HEAD
+microservices/.git/logs/refs/heads/master
+microservices/.git/logs/refs/remotes/origin/master
+microservices/.git/objects/info/packs
+microservices/.git/packed-refs
+microservices/.git/refs/remotes/origin/master
+microservices/api-gateway/package.json
+microservices/api-gateway/server.js
+microservices/article-service/controllers/ArticleController.js
+microservices/article-service/controllers/CommentController.js
+microservices/article-service/middlewares/authMiddleware.js
+microservices/article-service/models/article.js
+microservices/article-service/models/comment.js
+microservices/article-service/package.json
+microservices/article-service/routes/articleRouter.js
+microservices/article-service/routes/commentRouter.js
+microservices/article-service/server.js
+microservices/article-service/services/ServiceClient.js
+microservices/article-service/utils/serviceClient.js
+microservices/notification-service/package.json
+microservices/notification-service/server.js
+microservices/package.json
+microservices/user-service/controllers/authController.js
+microservices/user-service/controllers/userController.js
+microservices/user-service/middlewares/authMiddleware.js
+microservices/user-service/models/otp.js
+microservices/user-service/models/user.js
+microservices/user-service/package.json
+microservices/user-service/routes/userRoutes.js
+microservices/user-service/server.js
+microservices/user-service/utils/tokens.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="microservices/.git/COMMIT_EDITMSG">
+backend
+</file>
+
+<file path="microservices/.git/config">
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = https://github.com/RaedKharrat/test-backend.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+</file>
+
+<file path="microservices/.git/description">
+Unnamed repository; edit this file 'description' to name the repository.
+</file>
+
+<file path="microservices/.git/HEAD">
+ref: refs/heads/master
+</file>
+
+<file path="microservices/.git/hooks/applypatch-msg.sample">
+#!/bin/sh
+#
+# An example hook script to check the commit log message taken by
+# applypatch from an e-mail message.
+#
+# The hook should exit with non-zero status after issuing an
+# appropriate message if it wants to stop the commit.  The hook is
+# allowed to edit the commit message file.
+#
+# To enable this hook, rename this file to "applypatch-msg".
+
+. git-sh-setup
+commitmsg="$(git rev-parse --git-path hooks/commit-msg)"
+test -x "$commitmsg" && exec "$commitmsg" ${1+"$@"}
+:
+</file>
+
+<file path="microservices/.git/hooks/commit-msg.sample">
+#!/bin/sh
+#
+# An example hook script to check the commit log message.
+# Called by "git commit" with one argument, the name of the file
+# that has the commit message.  The hook should exit with non-zero
+# status after issuing an appropriate message if it wants to stop the
+# commit.  The hook is allowed to edit the commit message file.
+#
+# To enable this hook, rename this file to "commit-msg".
+
+# Uncomment the below to add a Signed-off-by line to the message.
+# Doing this in a hook is a bad idea in general, but the prepare-commit-msg
+# hook is more suited to it.
+#
+# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+
+# This example catches duplicate Signed-off-by lines.
+
+test "" = "$(grep '^Signed-off-by: ' "$1" |
+	 sort | uniq -c | sed -e '/^[ 	]*1[ 	]/d')" || {
+	echo >&2 Duplicate Signed-off-by lines.
+	exit 1
+}
+</file>
+
+<file path="microservices/.git/hooks/fsmonitor-watchman.sample">
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IPC::Open2;
+
+# An example hook script to integrate Watchman
+# (https://facebook.github.io/watchman/) with git to speed up detecting
+# new and modified files.
+#
+# The hook is passed a version (currently 2) and last update token
+# formatted as a string and outputs to stdout a new update token and
+# all files that have been modified since the update token. Paths must
+# be relative to the root of the working tree and separated by a single NUL.
+#
+# To enable this hook, rename this file to "query-watchman" and set
+# 'git config core.fsmonitor .git/hooks/query-watchman'
+#
+my ($version, $last_update_token) = @ARGV;
+
+# Uncomment for debugging
+# print STDERR "$0 $version $last_update_token\n";
+
+# Check the hook interface version
+if ($version ne 2) {
+	die "Unsupported query-fsmonitor hook version '$version'.\n" .
+	    "Falling back to scanning...\n";
+}
+
+my $git_work_tree = get_working_dir();
+
+my $retry = 1;
+
+my $json_pkg;
+eval {
+	require JSON::XS;
+	$json_pkg = "JSON::XS";
+	1;
+} or do {
+	require JSON::PP;
+	$json_pkg = "JSON::PP";
+};
+
+launch_watchman();
+
+sub launch_watchman {
+	my $o = watchman_query();
+	if (is_work_tree_watched($o)) {
+		output_result($o->{clock}, @{$o->{files}});
+	}
+}
+
+sub output_result {
+	my ($clockid, @files) = @_;
+
+	# Uncomment for debugging watchman output
+	# open (my $fh, ">", ".git/watchman-output.out");
+	# binmode $fh, ":utf8";
+	# print $fh "$clockid\n@files\n";
+	# close $fh;
+
+	binmode STDOUT, ":utf8";
+	print $clockid;
+	print "\0";
+	local $, = "\0";
+	print @files;
+}
+
+sub watchman_clock {
+	my $response = qx/watchman clock "$git_work_tree"/;
+	die "Failed to get clock id on '$git_work_tree'.\n" .
+		"Falling back to scanning...\n" if $? != 0;
+
+	return $json_pkg->new->utf8->decode($response);
+}
+
+sub watchman_query {
+	my $pid = open2(\*CHLD_OUT, \*CHLD_IN, 'watchman -j --no-pretty')
+	or die "open2() failed: $!\n" .
+	"Falling back to scanning...\n";
+
+	# In the query expression below we're asking for names of files that
+	# changed since $last_update_token but not from the .git folder.
+	#
+	# To accomplish this, we're using the "since" generator to use the
+	# recency index to select candidate nodes and "fields" to limit the
+	# output to file names only. Then we're using the "expression" term to
+	# further constrain the results.
+	if (substr($last_update_token, 0, 1) eq "c") {
+		$last_update_token = "\"$last_update_token\"";
+	}
+	my $query = <<"	END";
+		["query", "$git_work_tree", {
+			"since": $last_update_token,
+			"fields": ["name"],
+			"expression": ["not", ["dirname", ".git"]]
+		}]
+	END
+
+	# Uncomment for debugging the watchman query
+	# open (my $fh, ">", ".git/watchman-query.json");
+	# print $fh $query;
+	# close $fh;
+
+	print CHLD_IN $query;
+	close CHLD_IN;
+	my $response = do {local $/; <CHLD_OUT>};
+
+	# Uncomment for debugging the watch response
+	# open ($fh, ">", ".git/watchman-response.json");
+	# print $fh $response;
+	# close $fh;
+
+	die "Watchman: command returned no output.\n" .
+	"Falling back to scanning...\n" if $response eq "";
+	die "Watchman: command returned invalid output: $response\n" .
+	"Falling back to scanning...\n" unless $response =~ /^\{/;
+
+	return $json_pkg->new->utf8->decode($response);
+}
+
+sub is_work_tree_watched {
+	my ($output) = @_;
+	my $error = $output->{error};
+	if ($retry > 0 and $error and $error =~ m/unable to resolve root .* directory (.*) is not watched/) {
+		$retry--;
+		my $response = qx/watchman watch "$git_work_tree"/;
+		die "Failed to make watchman watch '$git_work_tree'.\n" .
+		    "Falling back to scanning...\n" if $? != 0;
+		$output = $json_pkg->new->utf8->decode($response);
+		$error = $output->{error};
+		die "Watchman: $error.\n" .
+		"Falling back to scanning...\n" if $error;
+
+		# Uncomment for debugging watchman output
+		# open (my $fh, ">", ".git/watchman-output.out");
+		# close $fh;
+
+		# Watchman will always return all files on the first query so
+		# return the fast "everything is dirty" flag to git and do the
+		# Watchman query just to get it over with now so we won't pay
+		# the cost in git to look up each individual file.
+		my $o = watchman_clock();
+		$error = $output->{error};
+
+		die "Watchman: $error.\n" .
+		"Falling back to scanning...\n" if $error;
+
+		output_result($o->{clock}, ("/"));
+		$last_update_token = $o->{clock};
+
+		eval { launch_watchman() };
+		return 0;
+	}
+
+	die "Watchman: $error.\n" .
+	"Falling back to scanning...\n" if $error;
+
+	return 1;
+}
+
+sub get_working_dir {
+	my $working_dir;
+	if ($^O =~ 'msys' || $^O =~ 'cygwin') {
+		$working_dir = Win32::GetCwd();
+		$working_dir =~ tr/\\/\//;
+	} else {
+		require Cwd;
+		$working_dir = Cwd::cwd();
+	}
+
+	return $working_dir;
+}
+</file>
+
+<file path="microservices/.git/hooks/post-update.sample">
+#!/bin/sh
+#
+# An example hook script to prepare a packed repository for use over
+# dumb transports.
+#
+# To enable this hook, rename this file to "post-update".
+
+exec git update-server-info
+</file>
+
+<file path="microservices/.git/hooks/pre-applypatch.sample">
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed
+# by applypatch from an e-mail message.
+#
+# The hook should exit with non-zero status after issuing an
+# appropriate message if it wants to stop the commit.
+#
+# To enable this hook, rename this file to "pre-applypatch".
+
+. git-sh-setup
+precommit="$(git rev-parse --git-path hooks/pre-commit)"
+test -x "$precommit" && exec "$precommit" ${1+"$@"}
+:
+</file>
+
+<file path="microservices/.git/hooks/pre-commit.sample">
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+#
+# To enable this hook, rename this file to "pre-commit".
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=$(git hash-object -t tree /dev/null)
+fi
+
+# If you want to allow non-ASCII filenames set this variable to true.
+allownonascii=$(git config --type=bool hooks.allownonascii)
+
+# Redirect output to stderr.
+exec 1>&2
+
+# Cross platform projects tend to avoid non-ASCII filenames; prevent
+# them from being added to the repository. We exploit the fact that the
+# printable range starts at the space character and ends with tilde.
+if [ "$allownonascii" != "true" ] &&
+	# Note that the use of brackets around a tr range is ok here, (it's
+	# even required, for portability to Solaris 10's /usr/bin/tr), since
+	# the square bracket bytes happen to fall in the designated range.
+	test $(git diff --cached --name-only --diff-filter=A -z $against |
+	  LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0
+then
+	cat <<\EOF
+Error: Attempt to add a non-ASCII file name.
+
+This can cause problems if you want to work with people on other platforms.
+
+To be portable it is advisable to rename the file.
+
+If you know what you are doing you can disable this check using:
+
+  git config hooks.allownonascii true
+EOF
+	exit 1
+fi
+
+# If there are whitespace errors, print the offending file names and fail.
+exec git diff-index --check --cached $against --
+</file>
+
+<file path="microservices/.git/hooks/pre-merge-commit.sample">
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git merge" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message to
+# stderr if it wants to stop the merge commit.
+#
+# To enable this hook, rename this file to "pre-merge-commit".
+
+. git-sh-setup
+test -x "$GIT_DIR/hooks/pre-commit" &&
+        exec "$GIT_DIR/hooks/pre-commit"
+:
+</file>
+
+<file path="microservices/.git/hooks/pre-push.sample">
+#!/bin/sh
+
+# An example hook script to verify what is about to be pushed.  Called by "git
+# push" after it has checked the remote status, but before anything has been
+# pushed.  If this script exits with a non-zero status nothing will be pushed.
+#
+# This hook is called with the following parameters:
+#
+# $1 -- Name of the remote to which the push is being done
+# $2 -- URL to which the push is being done
+#
+# If pushing without using a named remote those arguments will be equal.
+#
+# Information about the commits which are being pushed is supplied as lines to
+# the standard input in the form:
+#
+#   <local ref> <local oid> <remote ref> <remote oid>
+#
+# This sample shows how to prevent push of commits where the log message starts
+# with "WIP" (work in progress).
+
+remote="$1"
+url="$2"
+
+zero=$(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
+
+while read local_ref local_oid remote_ref remote_oid
+do
+	if test "$local_oid" = "$zero"
+	then
+		# Handle delete
+		:
+	else
+		if test "$remote_oid" = "$zero"
+		then
+			# New branch, examine all commits
+			range="$local_oid"
+		else
+			# Update to existing branch, examine new commits
+			range="$remote_oid..$local_oid"
+		fi
+
+		# Check for WIP commit
+		commit=$(git rev-list -n 1 --grep '^WIP' "$range")
+		if test -n "$commit"
+		then
+			echo >&2 "Found WIP commit in $local_ref, not pushing"
+			exit 1
+		fi
+	fi
+done
+
+exit 0
+</file>
+
+<file path="microservices/.git/hooks/pre-rebase.sample">
+#!/bin/sh
+#
+# Copyright (c) 2006, 2008 Junio C Hamano
+#
+# The "pre-rebase" hook is run just before "git rebase" starts doing
+# its job, and can prevent the command from running by exiting with
+# non-zero status.
+#
+# The hook is called with the following parameters:
+#
+# $1 -- the upstream the series was forked from.
+# $2 -- the branch being rebased (or empty when rebasing the current branch).
+#
+# This sample shows how to prevent topic branches that are already
+# merged to 'next' branch from getting rebased, because allowing it
+# would result in rebasing already published history.
+
+publish=next
+basebranch="$1"
+if test "$#" = 2
+then
+	topic="refs/heads/$2"
+else
+	topic=`git symbolic-ref HEAD` ||
+	exit 0 ;# we do not interrupt rebasing detached HEAD
+fi
+
+case "$topic" in
+refs/heads/??/*)
+	;;
+*)
+	exit 0 ;# we do not interrupt others.
+	;;
+esac
+
+# Now we are dealing with a topic branch being rebased
+# on top of master.  Is it OK to rebase it?
+
+# Does the topic really exist?
+git show-ref -q "$topic" || {
+	echo >&2 "No such branch $topic"
+	exit 1
+}
+
+# Is topic fully merged to master?
+not_in_master=`git rev-list --pretty=oneline ^master "$topic"`
+if test -z "$not_in_master"
+then
+	echo >&2 "$topic is fully merged to master; better remove it."
+	exit 1 ;# we could allow it, but there is no point.
+fi
+
+# Is topic ever merged to next?  If so you should not be rebasing it.
+only_next_1=`git rev-list ^master "^$topic" ${publish} | sort`
+only_next_2=`git rev-list ^master           ${publish} | sort`
+if test "$only_next_1" = "$only_next_2"
+then
+	not_in_topic=`git rev-list "^$topic" master`
+	if test -z "$not_in_topic"
+	then
+		echo >&2 "$topic is already up to date with master"
+		exit 1 ;# we could allow it, but there is no point.
+	else
+		exit 0
+	fi
+else
+	not_in_next=`git rev-list --pretty=oneline ^${publish} "$topic"`
+	/usr/bin/perl -e '
+		my $topic = $ARGV[0];
+		my $msg = "* $topic has commits already merged to public branch:\n";
+		my (%not_in_next) = map {
+			/^([0-9a-f]+) /;
+			($1 => 1);
+		} split(/\n/, $ARGV[1]);
+		for my $elem (map {
+				/^([0-9a-f]+) (.*)$/;
+				[$1 => $2];
+			} split(/\n/, $ARGV[2])) {
+			if (!exists $not_in_next{$elem->[0]}) {
+				if ($msg) {
+					print STDERR $msg;
+					undef $msg;
+				}
+				print STDERR " $elem->[1]\n";
+			}
+		}
+	' "$topic" "$not_in_next" "$not_in_master"
+	exit 1
+fi
+
+<<\DOC_END
+
+This sample hook safeguards topic branches that have been
+published from being rewound.
+
+The workflow assumed here is:
+
+ * Once a topic branch forks from "master", "master" is never
+   merged into it again (either directly or indirectly).
+
+ * Once a topic branch is fully cooked and merged into "master",
+   it is deleted.  If you need to build on top of it to correct
+   earlier mistakes, a new topic branch is created by forking at
+   the tip of the "master".  This is not strictly necessary, but
+   it makes it easier to keep your history simple.
+
+ * Whenever you need to test or publish your changes to topic
+   branches, merge them into "next" branch.
+
+The script, being an example, hardcodes the publish branch name
+to be "next", but it is trivial to make it configurable via
+$GIT_DIR/config mechanism.
+
+With this workflow, you would want to know:
+
+(1) ... if a topic branch has ever been merged to "next".  Young
+    topic branches can have stupid mistakes you would rather
+    clean up before publishing, and things that have not been
+    merged into other branches can be easily rebased without
+    affecting other people.  But once it is published, you would
+    not want to rewind it.
+
+(2) ... if a topic branch has been fully merged to "master".
+    Then you can delete it.  More importantly, you should not
+    build on top of it -- other people may already want to
+    change things related to the topic as patches against your
+    "master", so if you need further changes, it is better to
+    fork the topic (perhaps with the same name) afresh from the
+    tip of "master".
+
+Let's look at this example:
+
+		   o---o---o---o---o---o---o---o---o---o "next"
+		  /       /           /           /
+		 /   a---a---b A     /           /
+		/   /               /           /
+	       /   /   c---c---c---c B         /
+	      /   /   /             \         /
+	     /   /   /   b---b C     \       /
+	    /   /   /   /             \     /
+    ---o---o---o---o---o---o---o---o---o---o---o "master"
+
+
+A, B and C are topic branches.
+
+ * A has one fix since it was merged up to "next".
+
+ * B has finished.  It has been fully merged up to "master" and "next",
+   and is ready to be deleted.
+
+ * C has not merged to "next" at all.
+
+We would want to allow C to be rebased, refuse A, and encourage
+B to be deleted.
+
+To compute (1):
+
+	git rev-list ^master ^topic next
+	git rev-list ^master        next
+
+	if these match, topic has not merged in next at all.
+
+To compute (2):
+
+	git rev-list master..topic
+
+	if this is empty, it is fully merged to "master".
+
+DOC_END
+</file>
+
+<file path="microservices/.git/hooks/pre-receive.sample">
+#!/bin/sh
+#
+# An example hook script to make use of push options.
+# The example simply echoes all push options that start with 'echoback='
+# and rejects all pushes when the "reject" push option is used.
+#
+# To enable this hook, rename this file to "pre-receive".
+
+if test -n "$GIT_PUSH_OPTION_COUNT"
+then
+	i=0
+	while test "$i" -lt "$GIT_PUSH_OPTION_COUNT"
+	do
+		eval "value=\$GIT_PUSH_OPTION_$i"
+		case "$value" in
+		echoback=*)
+			echo "echo from the pre-receive-hook: ${value#*=}" >&2
+			;;
+		reject)
+			exit 1
+		esac
+		i=$((i + 1))
+	done
+fi
+</file>
+
+<file path="microservices/.git/hooks/prepare-commit-msg.sample">
+#!/bin/sh
+#
+# An example hook script to prepare the commit log message.
+# Called by "git commit" with the name of the file that has the
+# commit message, followed by the description of the commit
+# message's source.  The hook's purpose is to edit the commit
+# message file.  If the hook fails with a non-zero status,
+# the commit is aborted.
+#
+# To enable this hook, rename this file to "prepare-commit-msg".
+
+# This hook includes three examples. The first one removes the
+# "# Please enter the commit message..." help message.
+#
+# The second includes the output of "git diff --name-status -r"
+# into the message, just before the "git status" output.  It is
+# commented because it doesn't cope with --amend or with squashed
+# commits.
+#
+# The third example adds a Signed-off-by line to the message, that can
+# still be edited.  This is rarely a good idea.
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+/usr/bin/perl -i.bak -ne 'print unless(m/^. Please enter the commit message/..m/^#$/)' "$COMMIT_MSG_FILE"
+
+# case "$COMMIT_SOURCE,$SHA1" in
+#  ,|template,)
+#    /usr/bin/perl -i.bak -pe '
+#       print "\n" . `git diff --cached --name-status -r`
+# 	 if /^#/ && $first++ == 0' "$COMMIT_MSG_FILE" ;;
+#  *) ;;
+# esac
+
+# SOB=$(git var GIT_COMMITTER_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+# git interpret-trailers --in-place --trailer "$SOB" "$COMMIT_MSG_FILE"
+# if test -z "$COMMIT_SOURCE"
+# then
+#   /usr/bin/perl -i.bak -pe 'print "\n" if !$first_line++' "$COMMIT_MSG_FILE"
+# fi
+</file>
+
+<file path="microservices/.git/hooks/push-to-checkout.sample">
+#!/bin/sh
+
+# An example hook script to update a checked-out tree on a git push.
+#
+# This hook is invoked by git-receive-pack(1) when it reacts to git
+# push and updates reference(s) in its repository, and when the push
+# tries to update the branch that is currently checked out and the
+# receive.denyCurrentBranch configuration variable is set to
+# updateInstead.
+#
+# By default, such a push is refused if the working tree and the index
+# of the remote repository has any difference from the currently
+# checked out commit; when both the working tree and the index match
+# the current commit, they are updated to match the newly pushed tip
+# of the branch. This hook is to be used to override the default
+# behaviour; however the code below reimplements the default behaviour
+# as a starting point for convenient modification.
+#
+# The hook receives the commit with which the tip of the current
+# branch is going to be updated:
+commit=$1
+
+# It can exit with a non-zero status to refuse the push (when it does
+# so, it must not modify the index or the working tree).
+die () {
+	echo >&2 "$*"
+	exit 1
+}
+
+# Or it can make any necessary changes to the working tree and to the
+# index to bring them to the desired state when the tip of the current
+# branch is updated to the new commit, and exit with a zero status.
+#
+# For example, the hook can simply run git read-tree -u -m HEAD "$1"
+# in order to emulate git fetch that is run in the reverse direction
+# with git push, as the two-tree form of git read-tree -u -m is
+# essentially the same as git switch or git checkout that switches
+# branches while keeping the local changes in the working tree that do
+# not interfere with the difference between the branches.
+
+# The below is a more-or-less exact translation to shell of the C code
+# for the default behaviour for git's push-to-checkout hook defined in
+# the push_to_deploy() function in builtin/receive-pack.c.
+#
+# Note that the hook will be executed from the repository directory,
+# not from the working tree, so if you want to perform operations on
+# the working tree, you will have to adapt your code accordingly, e.g.
+# by adding "cd .." or using relative paths.
+
+if ! git update-index -q --ignore-submodules --refresh
+then
+	die "Up-to-date check failed"
+fi
+
+if ! git diff-files --quiet --ignore-submodules --
+then
+	die "Working directory has unstaged changes"
+fi
+
+# This is a rough translation of:
+#
+#   head_has_history() ? "HEAD" : EMPTY_TREE_SHA1_HEX
+if git cat-file -e HEAD 2>/dev/null
+then
+	head=HEAD
+else
+	head=$(git hash-object -t tree --stdin </dev/null)
+fi
+
+if ! git diff-index --quiet --cached --ignore-submodules $head --
+then
+	die "Working directory has staged changes"
+fi
+
+if ! git read-tree -u -m "$commit"
+then
+	die "Could not update working tree to new HEAD"
+fi
+</file>
+
+<file path="microservices/.git/hooks/update.sample">
+#!/bin/sh
+#
+# An example hook script to block unannotated tags from entering.
+# Called by "git receive-pack" with arguments: refname sha1-old sha1-new
+#
+# To enable this hook, rename this file to "update".
+#
+# Config
+# ------
+# hooks.allowunannotated
+#   This boolean sets whether unannotated tags will be allowed into the
+#   repository.  By default they won't be.
+# hooks.allowdeletetag
+#   This boolean sets whether deleting tags will be allowed in the
+#   repository.  By default they won't be.
+# hooks.allowmodifytag
+#   This boolean sets whether a tag may be modified after creation. By default
+#   it won't be.
+# hooks.allowdeletebranch
+#   This boolean sets whether deleting branches will be allowed in the
+#   repository.  By default they won't be.
+# hooks.denycreatebranch
+#   This boolean sets whether remotely creating branches will be denied
+#   in the repository.  By default this is allowed.
+#
+
+# --- Command line
+refname="$1"
+oldrev="$2"
+newrev="$3"
+
+# --- Safety check
+if [ -z "$GIT_DIR" ]; then
+	echo "Don't run this script from the command line." >&2
+	echo " (if you want, you could supply GIT_DIR then run" >&2
+	echo "  $0 <ref> <oldrev> <newrev>)" >&2
+	exit 1
+fi
+
+if [ -z "$refname" -o -z "$oldrev" -o -z "$newrev" ]; then
+	echo "usage: $0 <ref> <oldrev> <newrev>" >&2
+	exit 1
+fi
+
+# --- Config
+allowunannotated=$(git config --type=bool hooks.allowunannotated)
+allowdeletebranch=$(git config --type=bool hooks.allowdeletebranch)
+denycreatebranch=$(git config --type=bool hooks.denycreatebranch)
+allowdeletetag=$(git config --type=bool hooks.allowdeletetag)
+allowmodifytag=$(git config --type=bool hooks.allowmodifytag)
+
+# check for no description
+projectdesc=$(sed -e '1q' "$GIT_DIR/description")
+case "$projectdesc" in
+"Unnamed repository"* | "")
+	echo "*** Project description file hasn't been set" >&2
+	exit 1
+	;;
+esac
+
+# --- Check types
+# if $newrev is 0000...0000, it's a commit to delete a ref.
+zero=$(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
+if [ "$newrev" = "$zero" ]; then
+	newrev_type=delete
+else
+	newrev_type=$(git cat-file -t $newrev)
+fi
+
+case "$refname","$newrev_type" in
+	refs/tags/*,commit)
+		# un-annotated tag
+		short_refname=${refname##refs/tags/}
+		if [ "$allowunannotated" != "true" ]; then
+			echo "*** The un-annotated tag, $short_refname, is not allowed in this repository" >&2
+			echo "*** Use 'git tag [ -a | -s ]' for tags you want to propagate." >&2
+			exit 1
+		fi
+		;;
+	refs/tags/*,delete)
+		# delete tag
+		if [ "$allowdeletetag" != "true" ]; then
+			echo "*** Deleting a tag is not allowed in this repository" >&2
+			exit 1
+		fi
+		;;
+	refs/tags/*,tag)
+		# annotated tag
+		if [ "$allowmodifytag" != "true" ] && git rev-parse $refname > /dev/null 2>&1
+		then
+			echo "*** Tag '$refname' already exists." >&2
+			echo "*** Modifying a tag is not allowed in this repository." >&2
+			exit 1
+		fi
+		;;
+	refs/heads/*,commit)
+		# branch
+		if [ "$oldrev" = "$zero" -a "$denycreatebranch" = "true" ]; then
+			echo "*** Creating a branch is not allowed in this repository" >&2
+			exit 1
+		fi
+		;;
+	refs/heads/*,delete)
+		# delete branch
+		if [ "$allowdeletebranch" != "true" ]; then
+			echo "*** Deleting a branch is not allowed in this repository" >&2
+			exit 1
+		fi
+		;;
+	refs/remotes/*,commit)
+		# tracking branch
+		;;
+	refs/remotes/*,delete)
+		# delete tracking branch
+		if [ "$allowdeletebranch" != "true" ]; then
+			echo "*** Deleting a tracking branch is not allowed in this repository" >&2
+			exit 1
+		fi
+		;;
+	*)
+		# Anything else (is there anything else?)
+		echo "*** Update hook: unknown type of update to ref $refname of type $newrev_type" >&2
+		exit 1
+		;;
+esac
+
+# --- Finished
+exit 0
+</file>
+
+<file path="microservices/.git/info/exclude">
+# git ls-files --others --exclude-from=.git/info/exclude
+# Lines that start with '#' are comments.
+# For a project mostly in C, the following would be a good set of
+# exclude patterns (uncomment them if you want to use them):
+# *.[oa]
+# *~
+</file>
+
+<file path="microservices/.git/info/refs">
+9faedd346f0a1b46c73fbf199bb1306020d663dc	refs/heads/master
+</file>
+
+<file path="microservices/.git/logs/HEAD">
+0000000000000000000000000000000000000000 9faedd346f0a1b46c73fbf199bb1306020d663dc mtpack <kharrat.raed@esprit.tn> 1758746027 +0100	commit (initial): backend
+</file>
+
+<file path="microservices/.git/logs/refs/heads/master">
+0000000000000000000000000000000000000000 9faedd346f0a1b46c73fbf199bb1306020d663dc mtpack <kharrat.raed@esprit.tn> 1758746027 +0100	commit (initial): backend
+</file>
+
+<file path="microservices/.git/logs/refs/remotes/origin/master">
+0000000000000000000000000000000000000000 9faedd346f0a1b46c73fbf199bb1306020d663dc mtpack <kharrat.raed@esprit.tn> 1758746101 +0100	update by push
+</file>
+
+<file path="microservices/.git/objects/info/packs">
+P pack-6de0ea47f0ff6a1f7a9c0c9c554e340f13d2e838.pack
+</file>
+
+<file path="microservices/.git/packed-refs">
+# pack-refs with: peeled fully-peeled sorted 
+9faedd346f0a1b46c73fbf199bb1306020d663dc refs/heads/master
+</file>
+
+<file path="microservices/.git/refs/remotes/origin/master">
+9faedd346f0a1b46c73fbf199bb1306020d663dc
+</file>
+
+<file path="microservices/api-gateway/package.json">
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "type": "module", 
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+</file>
+
+<file path="microservices/api-gateway/server.js">
+import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.GATEWAY_PORT || 3000;
+
+// Service URLs
+const USER_SERVICE_URL = `http://localhost:${process.env.USER_SERVICE_PORT || 3001}`;
+const ARTICLE_SERVICE_URL = `http://localhost:${process.env.ARTICLE_SERVICE_PORT || 3002}`;
+const NOTIFICATION_SERVICE_URL = `http://localhost:${process.env.NOTIFICATION_SERVICE_PORT || 3003}`;
+
+console.log('=== API Gateway Starting ===');
+console.log('Port:', PORT);
+console.log('User Service:', USER_SERVICE_URL);
+console.log('Article Service:', ARTICLE_SERVICE_URL);
+console.log('Notification Service:', NOTIFICATION_SERVICE_URL);
+
+// Middleware
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:4200',
+  credentials: true
+}));
+
+app.use(express.json({ 
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
+
+app.use(express.urlencoded({ 
+  extended: true, 
+  limit: '10mb' 
+}));
+
+// Enhanced request logging
+app.use((req, res, next) => {
+  const timestamp = new Date().toISOString();
+  console.log(`\n🚀 [Gateway] ${timestamp} ${req.method} ${req.originalUrl}`);
+  console.log('📋 Headers:', {
+    'Content-Type': req.headers['content-type'] || 'Not set',
+    'Authorization': req.headers['authorization'] ? 'Present' : 'Missing',
+    'Content-Length': req.headers['content-length'] || '0'
+  });
+  
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log('📦 Body:', JSON.stringify(req.body).substring(0, 200) + '...');
+  }
+  
+  next();
+});
+
+// Handle preflight requests
+app.options('*', cors());
+
+// ===== USER SERVICE PROXY =====
+app.use('/api/users', createProxyMiddleware({
+  target: USER_SERVICE_URL,
+  changeOrigin: true,
+  logLevel: 'warn',
+  proxyTimeout: 30000,
+  timeout: 30000,
+  xfwd: true, // Add x-forwarded headers
+  
+  onProxyReq: (proxyReq, req, res) => {
+    console.log(`🔀 [Users] ${req.method} ${req.originalUrl} → ${USER_SERVICE_URL}`);
+    
+    // Forward body for methods that should have body
+    if (req.body && Object.keys(req.body).length > 0 && ['POST', 'PUT', 'PATCH'].includes(req.method)) {
+      try {
+        const bodyData = JSON.stringify(req.body);
+        proxyReq.setHeader('Content-Type', 'application/json');
+        proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+        proxyReq.write(bodyData);
+        console.log(`✅ [Users] Body forwarded (${bodyData.length} bytes)`);
+      } catch (error) {
+        console.error('❌ [Users] Error forwarding body:', error.message);
+      }
+    } else if (req.method === 'GET' || req.method === 'DELETE') {
+      // Remove content headers for GET/DELETE requests
+      proxyReq.removeHeader('Content-Type');
+      proxyReq.removeHeader('Content-Length');
+    }
+  },
+  
+  onProxyRes: (proxyRes, req, res) => {
+    console.log(`✅ [Users] Response: ${proxyRes.statusCode} ${req.method} ${req.url}`);
+  },
+  
+  onError: (err, req, res) => {
+    console.error(`❌ [Users] Proxy Error: ${err.code} - ${err.message}`);
+    if (!res.headersSent) {
+      res.status(503).json({ 
+        error: 'User Service unavailable',
+        message: 'Please try again later',
+        service: 'user-service'
+      });
+    }
+  }
+}));
+
+// ===== ARTICLE SERVICE PROXY =====
+app.use('/api/articles', createProxyMiddleware({
+  target: ARTICLE_SERVICE_URL,
+  changeOrigin: true,
+  logLevel: 'warn',
+  proxyTimeout: 30000,
+  timeout: 30000,
+  xfwd: true,
+  
+  onProxyReq: (proxyReq, req, res) => {
+    console.log(`🔀 [Articles] ${req.method} ${req.originalUrl} → ${ARTICLE_SERVICE_URL}`);
+    
+    if (req.body && Object.keys(req.body).length > 0 && ['POST', 'PUT', 'PATCH'].includes(req.method)) {
+      try {
+        const bodyData = JSON.stringify(req.body);
+        proxyReq.setHeader('Content-Type', 'application/json');
+        proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+        proxyReq.write(bodyData);
+        console.log(`✅ [Articles] Body forwarded (${bodyData.length} bytes)`);
+      } catch (error) {
+        console.error('❌ [Articles] Error forwarding body:', error.message);
+      }
+    } else {
+      proxyReq.removeHeader('Content-Type');
+      proxyReq.removeHeader('Content-Length');
+    }
+  },
+  
+  onProxyRes: (proxyRes, req, res) => {
+    console.log(`✅ [Articles] Response: ${proxyRes.statusCode} ${req.method} ${req.url}`);
+  },
+  
+  onError: (err, req, res) => {
+    console.error(`❌ [Articles] Proxy Error: ${err.code} - ${err.message}`);
+    if (!res.headersSent) {
+      res.status(503).json({ 
+        error: 'Article Service unavailable',
+        message: 'Please try again later',
+        service: 'article-service'
+      });
+    }
+  }
+}));
+
+// ===== COMMENTS PROXY =====
+app.use('/api/comments', createProxyMiddleware({
+  target: ARTICLE_SERVICE_URL,
+  changeOrigin: true,
+  logLevel: 'warn',
+  proxyTimeout: 30000,
+  timeout: 30000,
+  xfwd: true,
+  
+  onProxyReq: (proxyReq, req, res) => {
+    console.log(`🔀 [Comments] ${req.method} ${req.originalUrl} → ${ARTICLE_SERVICE_URL}`);
+    
+    if (req.body && Object.keys(req.body).length > 0 && ['POST', 'PUT', 'PATCH'].includes(req.method)) {
+      try {
+        const bodyData = JSON.stringify(req.body);
+        proxyReq.setHeader('Content-Type', 'application/json');
+        proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+        proxyReq.write(bodyData);
+        console.log(`✅ [Comments] Body forwarded (${bodyData.length} bytes)`);
+      } catch (error) {
+        console.error('❌ [Comments] Error forwarding body:', error.message);
+      }
+    } else {
+      proxyReq.removeHeader('Content-Type');
+      proxyReq.removeHeader('Content-Length');
+    }
+  },
+  
+  onProxyRes: (proxyRes, req, res) => {
+    console.log(`✅ [Comments] Response: ${proxyRes.statusCode} ${req.method} ${req.url}`);
+  },
+  
+  onError: (err, req, res) => {
+    console.error(`❌ [Comments] Proxy Error: ${err.code} - ${err.message}`);
+    if (!res.headersSent) {
+      res.status(503).json({ 
+        error: 'Comments Service unavailable',
+        message: 'Please try again later',
+        service: 'article-service'
+      });
+    }
+  }
+}));
+
+// ===== NOTIFICATION SERVICE PROXY =====
+app.use('/api/notifications', createProxyMiddleware({
+  target: NOTIFICATION_SERVICE_URL,
+  changeOrigin: true,
+  logLevel: 'warn',
+  proxyTimeout: 30000,
+  timeout: 30000,
+  xfwd: true,
+  
+  onError: (err, req, res) => {
+    console.error(`❌ [Notifications] Proxy Error: ${err.code}`);
+    if (!res.headersSent) {
+      res.status(503).json({ error: 'Notification Service unavailable' });
+    }
+  }
+}));
+
+// ===== WEB SOCKET PROXY =====
+app.use('/ws', createProxyMiddleware({
+  target: NOTIFICATION_SERVICE_URL,
+  changeOrigin: true,
+  ws: true,
+  logLevel: 'warn'
+}));
+
+// ===== GATEWAY HEALTH CHECK =====
+app.get('/health', async (req, res) => {
+  try {
+    const services = [
+      { name: 'User Service', url: USER_SERVICE_URL, endpoint: '/health' },
+      { name: 'Article Service', url: ARTICLE_SERVICE_URL, endpoint: '/health' },
+      { name: 'Notification Service', url: NOTIFICATION_SERVICE_URL, endpoint: '/health' }
+    ];
+
+    const healthChecks = await Promise.all(
+      services.map(async (service) => {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          
+          const response = await fetch(`${service.url}${service.endpoint}`, {
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (response.ok) {
+            const data = await response.json().catch(() => ({}));
+            return {
+              service: service.name,
+              status: 'OK',
+              url: service.url,
+              details: data
+            };
+          } else {
+            return {
+              service: service.name,
+              status: 'ERROR',
+              url: service.url,
+              error: `HTTP ${response.status}`
+            };
+          }
+        } catch (error) {
+          return {
+            service: service.name,
+            status: 'ERROR',
+            url: service.url,
+            error: error.message
+          };
+        }
+      })
+    );
+
+    res.json({
+      gateway: 'OK',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      services: healthChecks
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Health check failed',
+      message: error.message 
+    });
+  }
+});
+
+// ===== GATEWAY TEST ENDPOINTS =====
+app.get('/test', (req, res) => {
+  res.json({ 
+    message: '🚀 API Gateway is operational!',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    endpoints: {
+      users: '/api/users',
+      articles: '/api/articles',
+      comments: '/api/comments',
+      notifications: '/api/notifications',
+      websocket: '/ws'
+    }
+  });
+});
+
+// ===== SERVICE STATUS ENDPOINT =====
+app.get('/status', async (req, res) => {
+  const status = {
+    gateway: {
+      status: 'running',
+      port: PORT,
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    },
+    services: {
+      userService: USER_SERVICE_URL,
+      articleService: ARTICLE_SERVICE_URL,
+      notificationService: NOTIFICATION_SERVICE_URL
+    }
+  };
+  
+  res.json(status);
+});
+
+// ===== 404 HANDLER =====
+app.use('*', (req, res) => {
+  console.log(`❌ [Gateway] 404 - Route not found: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ 
+    error: 'Route not found',
+    message: `The endpoint ${req.method} ${req.originalUrl} does not exist on this gateway`,
+    availableEndpoints: [
+      'GET /health - Service health check',
+      'GET /test - Gateway test endpoint',
+      'GET /status - Gateway status',
+      'POST /api/users/* - User authentication & management',
+      'GET/POST/PUT/DELETE /api/articles/* - Article management',
+      'GET/POST/PUT/DELETE /api/comments/* - Comment management',
+      'GET /api/notifications/* - Notification service'
+    ]
+  });
+});
+
+// ===== GLOBAL ERROR HANDLER =====
+app.use((err, req, res, next) => {
+  console.error('💥 [Gateway] Unhandled Error:', err);
+  
+  if (!res.headersSent) {
+    res.status(500).json({ 
+      error: 'Internal gateway error',
+      message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong',
+      ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    });
+  }
+});
+
+// ===== GRACEFUL SHUTDOWN =====
+process.on('SIGINT', () => {
+  console.log('\n🛑 [Gateway] Shutting down gracefully...');
+  process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+  console.log('\n🛑 [Gateway] Received SIGTERM, shutting down...');
+  process.exit(0);
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`\n✅ API Gateway running on http://localhost:${PORT}`);
+  console.log(`🔗 Health Check: http://localhost:${PORT}/health`);
+  console.log(`🧪 Test Endpoint: http://localhost:${PORT}/test`);
+  console.log(`📊 Status: http://localhost:${PORT}/status`);
+  console.log(`👥 Users API: http://localhost:${PORT}/api/users`);
+  console.log(`📝 Articles API: http://localhost:${PORT}/api/articles`);
+  console.log(`💬 Comments API: http://localhost:${PORT}/api/comments`);
+  console.log(`🔔 Notifications API: http://localhost:${PORT}/api/notifications`);
+  console.log(`⚡ WebSocket: http://localhost:${PORT}/ws`);
+  console.log(`\n🌐 Gateway ready to proxy requests to microservices...`);
+});
+
+export default app;
+</file>
+
+<file path="microservices/article-service/controllers/ArticleController.js">
+// controllers/ArticleController.js
+import Article from '../models/article.js';
+import slugify from 'slugify';
+
+export const createArticle = async (req, res, next) => {
+  try {
+    const { title, content, tags, imageUrl } = req.body;
+    const slug = slugify(title, { lower: true, strict: true }) + '-' + Date.now();
+
+    const article = await Article.create({
+      title,
+      slug,
+      content,
+      tags: tags || [],
+      imageUrl,
+      author: req.user.id,
+      authorName: `${req.user.firstName} ${req.user.lastName}` // Store author name
+    });
+
+    // Remove population - just return the article
+    res.status(201).json(article);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getArticles = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const articles = await Article.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Article.countDocuments();
+
+    res.json({
+      articles,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getArticleById = async (req, res, next) => {
+  try {
+    const article = await Article.findById(req.params.id);
+    
+    if (!article) {
+      return res.status(404).json({ error: 'Article not found' });
+    }
+
+    // Increment view count
+    article.views += 1;
+    await article.save();
+
+    res.json(article);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateArticle = async (req, res, next) => {
+  try {
+    const { title, content, tags, imageUrl } = req.body;
+    const article = await Article.findById(req.params.id);
+
+    if (!article) {
+      return res.status(404).json({ error: 'Article not found' });
+    }
+
+    // Check permissions: Admin/Editor can edit any, Writer can only edit their own
+    if (req.user.role === 'Writer' && article.author.toString() !== req.user.id) {
+      return res.status(403).json({ error: 'You can only edit your own articles' });
+    }
+
+    // Update fields
+    if (title) {
+      article.title = title;
+      article.slug = slugify(title, { lower: true, strict: true }) + '-' + Date.now();
+    }
+    if (content) article.content = content;
+    if (tags) article.tags = tags;
+    if (imageUrl) article.imageUrl = imageUrl;
+
+    const updatedArticle = await article.save();
+    res.json(updatedArticle);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteArticle = async (req, res, next) => {
+  try {
+    const article = await Article.findById(req.params.id);
+
+    if (!article) {
+      return res.status(404).json({ error: 'Article not found' });
+    }
+
+    await Article.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Article deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const searchArticles = async (req, res, next) => {
+  try {
+    const { q, tag } = req.query;
+    let query = {};
+
+    if (q) {
+      query.$or = [
+        { title: { $regex: q, $options: 'i' } },
+        { content: { $regex: q, $options: 'i' } }
+      ];
+    }
+
+    if (tag) {
+      query.tags = { $in: [tag] };
+    }
+
+    const articles = await Article.find(query).sort({ createdAt: -1 });
+    res.json(articles);
+  } catch (err) {
+    next(err);
+  }
+};
+</file>
+
+<file path="microservices/article-service/controllers/CommentController.js">
+import Comment from '../models/comment.js';
+import Article from '../models/article.js';
+
+export const createComment = async (req, res, next) => {
+  try {
+    const { articleId, content, parentId } = req.body;
+    
+    console.log('Creating comment for article:', articleId);
+    console.log('Comment content:', content);
+    console.log('Parent ID:', parentId);
+    console.log('User:', req.user);
+    
+    // Check if article exists
+    const article = await Article.findById(articleId);
+    if (!article) {
+      console.log('Article not found:', articleId);
+      return res.status(404).json({ error: 'Article not found' });
+    }
+
+    const comment = await Comment.create({
+      article: articleId,
+      parent: parentId || null,
+      author: req.user.id,
+      content,
+      authorName: `${req.user.firstName} ${req.user.lastName}`
+    });
+
+    console.log('Comment created successfully:', comment._id);
+
+    // TODO: WebSocket notifications would go here
+    // For now, just log that notifications would be sent
+    console.log('WebSocket notification would be sent for new comment');
+
+    res.status(201).json(comment);
+  } catch (err) {
+    console.error('Error creating comment:', err);
+    next(err);
+  }
+};
+
+export const getArticleComments = async (req, res, next) => {
+  try {
+    const { articleId } = req.params;
+    console.log('Getting comments for article:', articleId);
+    
+    const comments = await Comment.find({ article: articleId })
+      .sort({ createdAt: 1 });
+
+    console.log(`Found ${comments.length} comments`);
+
+    // Build nested comments structure
+    const buildCommentTree = (comments, parentId = null) => {
+      return comments
+        .filter(comment => {
+          if (parentId === null) return comment.parent === null;
+          return comment.parent && comment.parent.toString() === parentId;
+        })
+        .map(comment => ({
+          ...comment.toObject(),
+          replies: buildCommentTree(comments, comment._id.toString())
+        }));
+    };
+
+    const commentTree = buildCommentTree(comments);
+    res.json(commentTree);
+  } catch (err) {
+    console.error('Error getting comments:', err);
+    next(err);
+  }
+};
+
+export const updateComment = async (req, res, next) => {
+  try {
+    const { content } = req.body;
+    const commentId = req.params.id;
+    
+    console.log('Updating comment:', commentId);
+    console.log('New content:', content);
+
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) {
+      console.log('Comment not found:', commentId);
+      return res.status(404).json({ error: 'Comment not found' });
+    }
+
+    // Only author can update their comment
+    if (comment.author.toString() !== req.user.id) {
+      console.log('Permission denied. Comment author:', comment.author, 'User:', req.user.id);
+      return res.status(403).json({ error: 'You can only edit your own comments' });
+    }
+
+    comment.content = content;
+    const updatedComment = await comment.save();
+    
+    console.log('Comment updated successfully');
+
+    res.json(updatedComment);
+  } catch (err) {
+    console.error('Error updating comment:', err);
+    next(err);
+  }
+};
+
+export const deleteComment = async (req, res, next) => {
+  try {
+    const commentId = req.params.id;
+    console.log('Deleting comment:', commentId);
+
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) {
+      console.log('Comment not found:', commentId);
+      return res.status(404).json({ error: 'Comment not found' });
+    }
+
+    // Author or Admin can delete
+    if (comment.author.toString() !== req.user.id && req.user.role !== 'Admin') {
+      console.log('Permission denied. User role:', req.user.role);
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+
+    await Comment.findByIdAndDelete(commentId);
+    
+    // Also delete all replies to this comment
+    await Comment.deleteMany({ parent: commentId });
+
+    console.log('Comment deleted successfully');
+    res.json({ message: 'Comment deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting comment:', err);
+    next(err);
+  }
+};
+</file>
+
+<file path="microservices/article-service/middlewares/authMiddleware.js">
+import jwt from 'jsonwebtoken';
+
+export const authenticate = async (req, res, next) => {
+  console.log('🔐 Authentication started for:', req.method, req.originalUrl);
+  
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    console.log('❌ No authorization header provided');
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  const tokenParts = authHeader.split(' ');
+  if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+    console.log('❌ Invalid authorization header format');
+    return res.status(401).json({ message: 'Invalid token format' });
+  }
+
+  const token = tokenParts[1];
+
+  try {
+    console.log('🔍 Verifying JWT token...');
+    
+    // Make sure JWT_SECRET is set in your article service .env
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+    console.log('✅ Token verified successfully:', decoded);
+
+    // Adjust this based on what's actually in your JWT token
+    // Your token contains: sub, role, iat, exp
+    req.user = {
+      id: decoded.sub,        // This is the user ID
+      role: decoded.role,     // This is the user role
+      // Add fallbacks since your JWT might not have these
+      firstName: decoded.firstName || 'Unknown',
+      lastName: decoded.lastName || 'User'
+    };
+
+    console.log('✅ User authenticated:', req.user);
+    next();
+  } catch (err) {
+    console.error('❌ JWT verification failed:', err.message);
+    
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Token expired' });
+    }
+    if (err.name === 'JsonWebTokenError') {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+    
+    return res.status(500).json({ message: 'Authentication failed' });
+  }
+};
+
+export const authorize = (roles = []) => (req, res, next) => {
+  console.log('🔒 Authorization check for role:', req.user?.role);
+  console.log('Required roles:', roles);
+  
+  if (!req.user) {
+    console.log('❌ No user object found for authorization');
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+
+  if (!roles.includes(req.user.role)) {
+    console.log('❌ Insufficient permissions. User role:', req.user.role, 'Required:', roles);
+    return res.status(403).json({ 
+      message: 'Forbidden: Insufficient permissions',
+      currentRole: req.user.role,
+      requiredRoles: roles
+    });
+  }
+
+  console.log('✅ Authorization granted for role:', req.user.role);
+  next();
+};
+</file>
+
+<file path="microservices/article-service/models/article.js">
+// models/article.js
+import mongoose from 'mongoose';
+
+const articleSchema = new mongoose.Schema({
+  title: { 
+    type: String, 
+    required: true, 
+    trim: true
+  },
+  slug: { 
+    type: String, 
+    unique: true, 
+    required: true 
+  },
+  content: { 
+    type: String, 
+    required: true 
+  },
+  author: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    required: true
+  },
+  authorName: {  // Store author name for display purposes
+    type: String,
+    required: true
+  },
+  imageUrl: { 
+    type: String, 
+    default: null 
+  },
+  tags: [{ 
+    type: String, 
+    trim: true,
+    lowercase: true 
+  }],
+  views: { 
+    type: Number, 
+    default: 0 
+  },
+  likes: { 
+    type: Number, 
+    default: 0 
+  }
+}, { 
+  timestamps: true,
+  autoIndex: false // Prevent automatic index creation
+});
+
+// Create safe indexes
+articleSchema.index({ slug: 1 });
+articleSchema.index({ author: 1 });
+articleSchema.index({ tags: 1 });
+articleSchema.index({ createdAt: -1 });
+
+export default mongoose.model('Article', articleSchema);
+</file>
+
+<file path="microservices/article-service/models/comment.js">
+import mongoose from 'mongoose';
+
+const commentSchema = new mongoose.Schema({
+  article: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Article', 
+    required: true 
+  },
+  parent: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Comment', 
+    default: null 
+  },
+  author: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    required: true 
+  },
+  authorName: {
+    type: String,
+    required: true
+  },
+  content: { 
+    type: String, 
+    required: true,
+    trim: true 
+  }
+}, { 
+  timestamps: true 
+});
+
+// Create indexes
+commentSchema.index({ article: 1 });
+commentSchema.index({ parent: 1 });
+commentSchema.index({ createdAt: 1 });
+
+export default mongoose.model('Comment', commentSchema);
+</file>
+
+<file path="microservices/article-service/package.json">
+{
+  "name": "article-service",
+  "version": "1.0.0",
+  "description": "Microservice for managing articles",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.2.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.6.1",
+    "node-fetch": "^3.3.2",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
+</file>
+
+<file path="microservices/article-service/routes/articleRouter.js">
+// routes/articleRouter.js
+import express from 'express';
+import { body } from 'express-validator';
+import {
+  createArticle,
+  getArticles,
+  getArticleById,
+  updateArticle,
+  deleteArticle,
+  searchArticles
+} from '../controllers/ArticleController.js';
+import { authenticate, authorize } from '../middlewares/authMiddleware.js'; // Remove logAuth
+
+const router = express.Router();
+
+// Public routes
+router.get('/', getArticles);
+router.get('/search', searchArticles);
+
+// Health route
+router.get('/health', (req, res) => {
+  res.json({ status: 'Article routes OK' });
+});
+
+// Parameterized routes
+router.get('/:id', getArticleById);
+
+// Protected routes - with authentication and authorization
+router.post('/', 
+  authenticate,
+  authorize(['Admin', 'Editor', 'Writer']),
+  [
+    body('title').notEmpty().withMessage('Title is required'),
+    body('content').notEmpty().withMessage('Content is required')
+  ],
+  createArticle
+);
+
+router.put('/:id',
+  authenticate,
+  authorize(['Admin', 'Editor', 'Writer']),
+  updateArticle
+);
+
+router.delete('/:id',
+  authenticate,
+  authorize(['Admin']),
+  deleteArticle
+);
+
+export default router;
+</file>
+
+<file path="microservices/article-service/routes/commentRouter.js">
+import express from 'express';
+import { body } from 'express-validator';
+import {
+  createComment,
+  getArticleComments,
+  updateComment,
+  deleteComment
+} from '../controllers/CommentController.js';
+import { authenticate, authorize } from '../middlewares/authMiddleware.js';
+
+const router = express.Router();
+
+// Add simple test endpoint without authentication
+router.get('/test', (req, res) => {
+  console.log('💬 Comments test endpoint hit');
+  res.json({ 
+    message: 'Comments API is working!',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Add health endpoint
+router.get('/health', (req, res) => {
+  console.log('💬 Comments health endpoint hit');
+  res.json({ 
+    status: 'Comments routes OK',
+    timestamp: new Date().toISOString()
+  });
+});
+
+router.get('/article/:articleId', getArticleComments);
+
+router.post('/',
+  authenticate,
+  [
+    body('articleId').notEmpty().withMessage('Article ID is required'),
+    body('content').notEmpty().withMessage('Content is required')
+  ],
+  createComment
+);
+
+// Add a test POST endpoint without validation
+router.post('/test-post', (req, res) => {
+  console.log('💬 Comments test POST endpoint hit');
+  console.log('Body received:', req.body);
+  res.json({ 
+    message: 'Comments POST is working!',
+    received: req.body,
+    timestamp: new Date().toISOString()
+  });
+});
+
+router.put('/:id',
+  authenticate,
+  [
+    body('content').notEmpty().withMessage('Content is required')
+  ],
+  updateComment
+);
+
+router.delete('/:id',
+  authenticate,
+  deleteComment
+);
+
+export default router;
+</file>
+
+<file path="microservices/article-service/server.js">
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import articleRoutes from './routes/articleRouter.js';
+import commentRoutes from './routes/commentRouter.js';
+import path from 'path';
+
+dotenv.config({ path: path.resolve("..", "..", ".env") });
+
+const app = express();
+const PORT = process.env.ARTICLE_SERVICE_PORT || 3002;
+
+console.log('MONGO_URI:', process.env.MONGO_URI);
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Enhanced request logging
+app.use((req, res, next) => {
+  console.log(`\n=== ARTICLE SERVICE REQUEST ===`);
+  console.log(`Time: ${new Date().toISOString()}`);
+  console.log(`Method: ${req.method}`);
+  console.log(`URL: ${req.url}`);
+  console.log(`Path: ${req.path}`);
+  console.log(`Original URL: ${req.originalUrl}`);
+  console.log(`Headers:`, req.headers);
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log('Body:', req.body);
+  }
+  next();
+});
+
+// Routes with logging
+app.use('/api/articles', (req, res, next) => {
+  console.log('📝 Articles route hit:', req.method, req.url);
+  next();
+}, articleRoutes);
+
+app.use('/api/comments', (req, res, next) => {
+  console.log('💬 Comments route hit:', req.method, req.url);
+  next();
+}, commentRoutes);
+
+// Test endpoint to verify server is working
+app.get('/test', (req, res) => {
+  console.log('✅ Test endpoint hit');
+  res.json({ 
+    message: 'Article Service is working!',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Global health check
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'Article Service OK',
+    timestamp: new Date().toISOString(),
+    service: 'article-service'
+  });
+});
+
+// Comments health check - FIXED PATH
+app.get('/api/comments/health', (req, res) => {
+  console.log('💬 Comments health check hit');
+  res.json({ 
+    status: 'Comments API OK',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+  console.log('❌ 404 - Route not found:', req.originalUrl);
+  res.status(404).json({ error: 'Route not found' });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  if (err.code === 'ECONNABORTED') {
+    console.log('Request aborted - ignoring');
+    return;
+  }
+  console.error('Article Service Error:', err.message);
+  if (!res.headersSent) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`✅ Article Service running on port ${PORT}`);
+});
+</file>
+
+<file path="microservices/article-service/services/ServiceClient.js">
+// article-service/services/ServiceClient.js
+import fetch from 'node-fetch';
+
+export class ServiceClient {
+  // Validate JWT token via user-service
+  static async validateToken(token) {
+    try {
+      const res = await fetch('http://localhost:3001/api/users/validate-token', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return res.ok;
+    } catch (err) {
+      console.error('Error validating token:', err);
+      return false;
+    }
+  }
+
+  // Get user info from JWT token via user-service
+  static async getUserFromToken(token) {
+    try {
+      const res = await fetch('http://localhost:3001/api/users/me', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.user; // expects { id, role, email }
+    } catch (err) {
+      console.error('Error fetching user:', err);
+      return null;
+    }
+  }
+}
+</file>
+
+<file path="microservices/article-service/utils/serviceClient.js">
+// services/ServiceClient.js
+import fetch from 'node-fetch';
+
+export class ServiceClient {
+  static async validateToken(token) {
+    try {
+      const response = await fetch(`http://localhost:${process.env.USER_SERVICE_PORT || 3001}/api/users/validate-token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        timeout: 5000
+      });
+      
+      if (!response.ok) {
+        console.error(`Token validation failed: ${response.status}`);
+        return false;
+      }
+      
+      const result = await response.json();
+      return result.valid;
+    } catch (error) {
+      console.error('ServiceClient - Token validation error:', error.message);
+      return false;
+    }
+  }
+
+  static async getUserFromToken(token) {
+    try {
+      const response = await fetch(`http://localhost:${process.env.USER_SERVICE_PORT || 3001}/api/users/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        timeout: 5000
+      });
+      
+      if (!response.ok) {
+        console.error(`Get user failed: ${response.status}`);
+        return null;
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('ServiceClient - Get user error:', error.message);
+      return null;
+    }
+  }
+}
+</file>
+
+<file path="microservices/notification-service/package.json">
+{
+  "name": "article-service",
+  "version": "1.0.0",
+  "description": "Microservice for managing articles",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.2.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.6.1",
+    "node-fetch": "^3.3.2",
+    "slugify": "^1.6.6",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
+</file>
+
+<file path="microservices/notification-service/server.js">
+import express from 'express';
+import { Server as IOServer } from 'socket.io';
+import http from 'http';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({ path: path.resolve("..", "..", ".env") });
+const app = express();
+const server = http.createServer(app);
+const PORT = process.env.NOTIFICATION_SERVICE_PORT || 3003;
+
+const io = new IOServer(server, {
+  cors: {
+    origin: process.env.CLIENT_URL || "http://localhost:4200",
+    methods: ["GET", "POST"]
+  }
+});
+
+// WebSocket handling (extracted from your existing code)
+io.on('connection', (socket) => {
+  console.log('New client connected to Notification Service:', socket.id);
+
+  socket.on('joinArticle', (articleId) => {
+    socket.join(`article_${articleId}`);
+  });
+
+  // Comment notifications
+  socket.on('newComment', (data) => {
+    socket.to(`article_${data.articleId}`).emit('commentAdded', data.comment);
+    socket.to(`user_${data.authorId}`).emit('newCommentNotification', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected from Notification Service:', socket.id);
+  });
+});
+
+app.use(cors());
+app.use(express.json());
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'Notification Service OK' });
+});
+
+server.listen(PORT, () => {
+  console.log(`Notification Service running on port ${PORT}`);
+});
+</file>
+
+<file path="microservices/package.json">
+{
+  "name": "blog-microservices",
+  "version": "1.0.0",
+  "scripts": {
+    "dev:gateway": "cd api-gateway && npm run dev",
+    "dev:user": "cd user-service && npm run dev",
+    "dev:article": "cd article-service && npm run dev",
+    "dev:notification": "cd notification-service && npm run dev",
+    "dev:all": "concurrently \"npm run dev:user\" \"npm run dev:article\" \"npm run dev:notification\" \"npm run dev:gateway\"",
+    "install:all": "cd user-service && npm install && cd ../article-service && npm install && cd ../notification-service && npm install && cd ../api-gateway && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
+</file>
+
+<file path="microservices/user-service/controllers/authController.js">
+// src/controllers/authController.js
+import User from '../models/user.js';
+import Otp from '../models/otp.js';
+import bcrypt from 'bcrypt';
+import nodemailer from 'nodemailer';
+import otpGenerator from 'otp-generator';
+
+import { signAccessToken, createRefreshToken, hashToken } from '../utils/tokens.js';
+
+export async function register(req, res, next) {
+  try {
+    const { email, password, firstName, lastName } = req.body;
+    const user = await User.create({ email, password, firstName, lastName });
+    return res.status(201).json({ message: 'User created' });
+  } catch (err) { next(err); }
+}
+
+export async function login(req, res, next) {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    const ok = await user.comparePassword(password);
+    if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const accessToken = signAccessToken(user);
+    const refreshToken = createRefreshToken();
+    const refreshHash = hashToken(refreshToken);
+
+    // save hashed refresh token to user
+    user.refreshTokens.push({ tokenHash: refreshHash, createdAt: new Date() });
+    await user.save();
+
+    // send refresh token as httpOnly cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 7 // 7d
+    });
+
+    return res.json({ accessToken, user: { id: user._id, email: user.email, role: user.role } });
+  } catch (err) { next(err); }
+}
+
+export async function refreshTokenHandler(req, res, next) {
+  try {
+    const raw = req.cookies?.refreshToken;
+    if (!raw) return res.status(401).json({ error: 'No refresh token' });
+
+    const hash = hashToken(raw);
+    // find user with this refresh token
+    const user = await User.findOne({ 'refreshTokens.tokenHash': hash });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid refresh token' });
+    }
+
+    // rotate: remove the used token
+    user.refreshTokens = user.refreshTokens.filter(rt => rt.tokenHash !== hash);
+
+    // issue new pair
+    const newAccess = signAccessToken(user);
+    const newRefresh = createRefreshToken();
+    user.refreshTokens.push({ tokenHash: hashToken(newRefresh), createdAt: new Date() });
+    await user.save();
+
+    res.cookie('refreshToken', newRefresh, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    });
+    return res.json({ accessToken: newAccess });
+  } catch (err) { next(err); }
+}
+
+export async function logout(req, res, next) {
+  try {
+    const raw = req.cookies?.refreshToken;
+    if (raw) {
+      const hash = hashToken(raw);
+      // remove matching token from user if any
+      await User.updateOne({ 'refreshTokens.tokenHash': hash }, { $pull: { refreshTokens: { tokenHash: hash } }});
+    }
+    res.clearCookie('refreshToken');
+    return res.json({ message: 'Logged out' });
+  } catch (err) { next(err); }
+}
+// Forget Password function
+export const forgetPassword = async function (req, res, next) {
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: 'User is not registered' });
+        }
+
+        await Otp.deleteMany({ userId: email });
+
+        const otp = otpGenerator.generate(6, {
+            digits: true,
+            upperCaseAlphabets: false,
+            specialChars: false,
+            lowerCaseAlphabets: false,
+        });
+        const otpDocument = new Otp({
+            userId: user._id, // Store user ID instead of email
+            otp,
+            createdAt: new Date() 
+        });
+        await otpDocument.save();
+        console.log(`OTP generated and saved for ${email}: ${otp}`);
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+
+        const mailOptions = {
+            from: `"Steelisia Support Team" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'Your Code for Password Reset',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+                    <h2 style="text-align: center; color: #7a6ad8;">Password Reset Request</h2>
+                    <p style="color: #333;">Hello,</p>
+                    <p style="color: #333;">We received a request to reset the password for your account. Use the OTP below to proceed:</p>
+                    
+                    <div style="text-align: center; margin: 20px 0;">
+                        <span style="font-size: 24px; font-weight: bold; color: #333; padding: 10px 20px; background-color: #f1f1f1; border-radius: 5px;">
+                            ${otp}
+                        </span>
+                    </div>
+
+                    <p style="color: #333;">This OTP is valid for the next 30 minutes. If you did not request a password reset, please ignore this email or contact support if you have questions.</p>
+
+                    <p style="text-align: center; color: #999; font-size: 12px; margin-top: 20px;">
+                        © ${new Date().getFullYear()} YourCompany. All rights reserved.
+                    </p>
+                </div>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        return res.status(200).json({ message: 'Code reset password was sent to your email' });
+    } catch (error) {
+        console.error('Error in forgetPassword:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+// OTP Verification function
+export const verifyOtp = async function (req, res, next) {
+    try {
+        const { email, otp } = req.body;
+        console.log(`Verifying OTP for: ${email}`);
+
+        const otpRecord = await Otp.findOne({ userId: user._id }).populate('userId');
+        console.log(`OTP Record Found: ${JSON.stringify(otpRecord)}`);
+
+        if (!otpRecord) {
+            return res.status(400).json({ message: 'OTP not found or expired' });
+        }
+
+        console.log(`Stored OTP: ${otpRecord.otp}, Provided OTP: ${otp}`);
+
+        if (otpRecord.otp !== otp) {
+            return res.status(401).json({ message: 'Invalid OTP' });
+        }
+
+        await Otp.deleteOne({ userId: email });
+
+        res.status(200).json({ message: 'OTP verified successfully. Proceed with password reset.' });
+    } catch (error) {
+        console.error('Error in verifyOtp:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
+// Reset Password function
+export const resetPassword = async function (req, res, next) {
+    try {
+        const { email, newPassword } = req.body;
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await User.findOneAndUpdate({ email }, { password: hashedPassword });
+
+        return res.status(200).json({ message: 'Password reset successfully' });
+    } catch (error) {
+        console.error('Error in resetPassword:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+</file>
+
+<file path="microservices/user-service/controllers/userController.js">
+import User from '../models/user.js';
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select('-password -refreshTokens');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Error retrieving users: ' + err.message });
+  }
+};
+
+export const updateUserRole = async (req, res) => {
+  try {
+    const { role } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.params.id, 
+      { role }, 
+      { new: true }
+    ).select('-password -refreshTokens');
+    
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Error updating user: ' + err.message });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error deleting user: ' + err.message });
+  }
+};
+</file>
+
+<file path="microservices/user-service/middlewares/authMiddleware.js">
+import jwt from 'jsonwebtoken';
+import User from '../models/user.js';
+
+export const authenticate = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: 'Access token required' });
+
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(payload.sub).select('-password -refreshTokens');
+    if (!user) return res.status(401).json({ error: 'User not found' });
+
+    req.user = user;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+};
+
+export const authorize = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+    next();
+  };
+};
+</file>
+
+<file path="microservices/user-service/models/otp.js">
+import mongoose from 'mongoose';
+
+const otpSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  otp: { type: String, required: true },
+  expiresAt: { type: Date, default: Date.now, expires: 1800 }
+}, { timestamps: true });
+
+export default mongoose.model('Otp', otpSchema);
+</file>
+
+<file path="microservices/user-service/models/user.js">
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+
+const userSchema = new mongoose.Schema({
+  email: { type: String, unique: true, required: true, lowercase: true },
+  password: { type: String, required: true },
+  firstName: String,
+  lastName: String,
+  role: { type: String, enum: ['Admin', 'Editor', 'Writer', 'Reader'], default: 'Reader' },
+  refreshTokens: [{ tokenHash: String, createdAt: Date }]
+}, { timestamps: true });
+
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
+});
+
+userSchema.methods.comparePassword = function(candidate) {
+  return bcrypt.compare(candidate, this.password);
+}
+
+export default mongoose.model('User', userSchema);
+</file>
+
+<file path="microservices/user-service/package.json">
+{
+  "name": "user-service",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.1.0",
+    "express-validator": "^7.0.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.0",
+    "nodemailer": "^6.9.1",
+    "otp-generator": "^4.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+</file>
+
+<file path="microservices/user-service/routes/userRoutes.js">
+import express from 'express';
+import { body, validationResult } from 'express-validator';
+import { 
+  register, 
+  login, 
+  logout, 
+  forgetPassword, 
+  verifyOtp, 
+  resetPassword,
+  refreshTokenHandler 
+} from '../controllers/authController.js';
+import { getAllUsers, updateUserRole, deleteUser } from '../controllers/userController.js';
+import { authenticate, authorize } from '../middlewares/authMiddleware.js';
+
+const router = express.Router();
+
+// Simple request logging
+router.use((req, res, next) => {
+  console.log(`[User Routes] ${new Date().toISOString()} ${req.method} ${req.path}`);
+  next();
+});
+
+// Add response timeout middleware
+router.use((req, res, next) => {
+  res.setTimeout(25000, () => {
+    if (!res.headersSent) {
+      res.status(504).json({ error: 'Request timeout' });
+    }
+  });
+  next();
+});
+
+// Validation error handler middleware
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ 
+      error: 'Validation failed', 
+      details: errors.array() 
+    });
+  }
+  next();
+};
+
+// ===== TEST ENDPOINTS =====
+router.get('/test', (req, res) => {
+  console.log('✅ userRoutes /test endpoint hit');
+  res.json({ 
+    message: 'User routes are working via gateway!',
+    timestamp: new Date().toISOString(),
+    route: '/api/users/test'
+  });
+});
+
+router.get('/simple-test', (req, res) => {
+  console.log('✅ userRoutes /simple-test endpoint hit');
+  res.json({ 
+    message: 'Simple test endpoint working via gateway!',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// ===== AUTH ROUTES =====
+
+// Register route
+router.post('/signup', [
+  body('email').isEmail().normalizeEmail(),
+  body('password').isLength({ min: 6 }),
+  body('firstName').notEmpty().trim().escape(),
+  body('lastName').notEmpty().trim().escape()
+], handleValidationErrors, async (req, res, next) => {
+  try {
+    console.log('Signup route reached');
+    await register(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Login route
+router.post('/login', [
+  body('email').isEmail().normalizeEmail(),
+  body('password').notEmpty()
+], handleValidationErrors, async (req, res, next) => {
+  try {
+    console.log('Login route reached');
+    await login(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Refresh token route
+router.post('/refresh-token', async (req, res, next) => {
+  try {
+    await refreshTokenHandler(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Logout route
+router.delete('/logout', async (req, res, next) => {
+  try {
+    console.log('Logout route reached');
+    await logout(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Password reset routes
+router.post('/forgot-password', [
+  body('email').isEmail().normalizeEmail()
+], handleValidationErrors, async (req, res, next) => {
+  try {
+    console.log('Forgot password route reached');
+    await forgetPassword(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/verify-otp', [
+  body('email').isEmail().normalizeEmail(),
+  body('otp').isLength({ min: 6, max: 6 })
+], handleValidationErrors, async (req, res, next) => {
+  try {
+    console.log('Verify OTP route reached');
+    await verifyOtp(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/reset-password', [
+  body('email').isEmail().normalizeEmail(),
+  body('newPassword').isLength({ min: 6 })
+], handleValidationErrors, async (req, res, next) => {
+  try {
+    console.log('Reset password route reached');
+    await resetPassword(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ===== USER MANAGEMENT ROUTES (Admin only) =====
+
+router.get('/', authenticate, authorize(['Admin']), async (req, res, next) => {
+  try {
+    console.log('Get all users route reached');
+    await getAllUsers(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/validate-token', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.json({ valid: false });
+    }
+
+    const token = authHeader.split(' ')[1];
+    
+    // Verify JWT directly without database check for simplicity
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.json({ valid: false });
+      }
+      return res.json({ valid: true, user: decoded });
+    });
+  } catch (error) {
+    console.error('Token validation error:', error);
+    res.json({ valid: false });
+  }
+});
+
+// Also add a /me endpoint
+router.get('/me', authenticate, (req, res) => {
+  res.json({
+    id: req.user.id,
+    email: req.user.email,
+    role: req.user.role
+  });
+});
+
+router.patch('/:id/role', authenticate, authorize(['Admin']), [
+  body('role').isIn(['Admin', 'Editor', 'Writer', 'Reader'])
+], handleValidationErrors, async (req, res, next) => {
+  try {
+    console.log('Update user role route reached');
+    await updateUserRole(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/:id', authenticate, authorize(['Admin']), async (req, res, next) => {
+  try {
+    console.log('Delete user route reached');
+    await deleteUser(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Global error handler for this router
+router.use((err, req, res, next) => {
+  console.error('User Routes Error:', err.message);
+  
+  if (!res.headersSent) {
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+    });
+  }
+});
+
+// 404 handler for user routes
+router.use('*', (req, res) => {
+  res.status(404).json({ error: 'User route not found' });
+});
+
+export default router;
+</file>
+
+<file path="microservices/user-service/server.js">
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import userRoutes from './routes/userRoutes.js';
+import path from 'path';
+
+dotenv.config({ path: path.resolve("..", "..", ".env") });
+
+const app = express();
+const PORT = process.env.USER_SERVICE_PORT || 3001;
+
+console.log('=== User Service Starting ===');
+console.log('Port:', PORT);
+
+// Fix: Better body parsing in User Service
+app.use(express.json({ 
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    if (buf && buf.length > 0) {
+      try {
+        JSON.parse(buf);
+      } catch (e) {
+        console.log('JSON parse error, but continuing...');
+      }
+    }
+  }
+}));
+
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+app.use(cors({
+  origin: ['http://localhost:4200', 'http://localhost:3000'],
+  credentials: true
+}));
+
+// Enhanced request logging
+app.use((req, res, next) => {
+  console.log(`\n[User Service] ${new Date().toISOString()} ${req.method} ${req.path}`);
+  console.log('Content-Type:', req.headers['content-type']);
+  console.log('Body received:', req.body);
+  next();
+});
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB error:', err.message));
+
+// Test endpoints
+app.get('/quick-test', (req, res) => {
+  console.log('✅ Quick test endpoint hit');
+  res.json({ 
+    message: 'User Service is working!',
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK',
+    service: 'user-service',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Routes
+app.use('/api/users', userRoutes);
+
+// Error handler
+app.use((err, req, res, next) => {
+  if (err.code === 'ECONNABORTED') {
+    console.log('Request aborted - ignoring');
+    return;
+  }
+  console.error('User Service Error:', err.message);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+app.listen(PORT, () => {
+  console.log(`✅ User Service running on http://localhost:${PORT}`);
+});
+</file>
+
+<file path="microservices/user-service/utils/tokens.js">
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+
+// utils/tokens.js
+export function signAccessToken(user) {
+  return jwt.sign(
+    { 
+      sub: user._id.toString(), 
+      role: user.role,
+      email: user.email  // Add email to token payload
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: '24h' }  // Longer expiration - 24 hours
+  );
+}
+
+export function createRefreshToken() {
+  return crypto.randomBytes(64).toString('hex');
+}
+
+export function hashToken(token) {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
+</file>
+
+</files>
