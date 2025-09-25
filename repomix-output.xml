@@ -1525,6 +1525,34 @@ export const searchArticles = async (req, res, next) => {
     next(err);
   }
 };
+
+
+export const getMyArticles = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const articles = await Article.find({ author: req.user.id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Article.countDocuments({ author: req.user.id });
+
+    res.json({
+      articles,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 </file>
 
 <file path="microservices/article-service/controllers/CommentController.js">
@@ -1876,7 +1904,8 @@ import {
   getArticleById,
   updateArticle,
   deleteArticle,
-  searchArticles
+  searchArticles,
+  getMyArticles       // Add this import
 } from '../controllers/ArticleController.js';
 import { authenticate, authorize } from '../middlewares/authMiddleware.js'; // Remove logAuth
 
@@ -1915,6 +1944,11 @@ router.delete('/:id',
   authenticate,
   authorize(['Admin']),
   deleteArticle
+);
+router.get('/user/my-articles', 
+  authenticate,
+  authorize(['Admin', 'Editor', 'Writer']),
+  getMyArticles
 );
 
 export default router;
