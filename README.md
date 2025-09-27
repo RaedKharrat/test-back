@@ -299,28 +299,7 @@ Application: http://localhost:4200
 
 Angular DevServer: http://localhost:4200 with hot reload
 
-🤝 Contributing
-Fork the repository
 
-Create a feature branch
-
-Commit your changes
-
-Push to the branch
-
-Open a Pull Request
-
-📄 License
-This project is licensed under the MIT License.
-
-🆘 Support
-For issues and questions:
-
-Check the troubleshooting section
-
-Review service logs
-
-Verify environment configuration
 
 Check MongoDB connection
 
